@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# RHEL Persistence Artifact Collection Script (Developed on RHEL 7.9)
+# RHEL Persistence Artifact Collection Script (Developed on RHEL 8.2)
 # Author: Timothy Tate
 
 # Working directory
@@ -20,7 +20,7 @@ mkdir xinet.d
 find /etc/xinet.d/ -type f -exec cp {} ./xinet.d \;
 find /etc/xinet.d/ -type l -exec cp {} ./xinet.d \;
 
-# Kernal Module persistence
+# Kernel Module persistence
 mkdir $(uname -r)
 find /lib/modules/$(uname -r) -type f -exec cp {} ./$(uname -r) \;
 find /lib/modules/$(uname -r) -type l -exec cp {} ./$(uname -r) \;
@@ -101,12 +101,12 @@ find /usr/lib/systemd/user-generators/ -type l -exec cp {} ./user-lib-systemd-us
 cd ..
 
 # Systemd Service paths persistence
-# mkdir service-paths
-# systemd-analyze unit-paths > ./service-paths/system-service-paths-list.txt
-# for i in $(ls /home | cat); do sudo -u $i systemd-analyze unit-paths --user > ./service-paths/$i-service-paths-list.txt; done
-# mkdir service-files
-# sh -c 'for i in $(cat ./service-paths/*); do find $i -type l -exec cp -rH --backup {} ./service-files/ \;; done'
-# sh -c 'for i in $(cat ./service-paths/*); do find $i -type f -exec cp -rH --backup {} ./service-files/ \;; done'
+mkdir service-paths
+systemd-analyze unit-paths > ./service-paths/system-service-paths-list.txt
+for i in $(ls /home | cat); do sudo -u $i systemd-analyze unit-paths --user > ./service-paths/$i-service-paths-list.txt; done
+mkdir service-files
+sh -c 'for i in $(cat ./service-paths/*); do find $i -type l -exec cp -rH --backup {} ./service-files/ \;; done'
+sh -c 'for i in $(cat ./service-paths/*); do find $i -type f -exec cp -rH --backup {} ./service-files/ \;; done'
 
 cd ..
 mv ./$HOSTNAME ./bin
